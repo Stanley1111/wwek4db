@@ -1,4 +1,7 @@
+const name = process.argv[2];
+
 const pg = require("pg");
+const moment = require("moment");
 const settings = require("./settings"); // settings.json
 
 const client = new pg.Client({
@@ -14,13 +17,17 @@ client.connect((err) => {
   if (err) {
     return console.error("Connection Error", err);
   }
-
-  client.query("SELECT $1::int AS number", ["1"], (err, result) => {
+  console.log("Searching...");
+  client.query("SELECT * FROM famous_people WHERE first_name = $1::text OR last_name = $1::text", [name], (err, result) => {
     if (err) {
       return console.error("error running query", err);
     }
+    console.log(`Found ${result.rows.length} person(s) by the name '${name}':`);
+    result.rows.forEach((element, i) => {
+      console.log(`- ${i+1}: ${element.first_name} ${element.last_name}, born '${moment(element.birthdate).format("YYYY-MM-DD")}'`);
 
-    console.log(result.rows[0].number); //output: 1
+    });
+
     client.end();
   });
 });
