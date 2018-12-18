@@ -18,16 +18,61 @@ client.connect((err) => {
     return console.error("Connection Error", err);
   }
   console.log("Searching...");
-  client.query("SELECT * FROM famous_people WHERE first_name = $1::text OR last_name = $1::text", [name], (err, result) => {
-    if (err) {
-      return console.error("error running query", err);
-    }
-    console.log(`Found ${result.rows.length} person(s) by the name '${name}':`);
-    result.rows.forEach((element, i) => {
-      console.log(`- ${i+1}: ${element.first_name} ${element.last_name}, born '${moment(element.birthdate).format("YYYY-MM-DD")}'`);
-
-    });
-
-    client.end();
-  });
 });
+
+const byName = (name, callback) => {
+  return client.query( "SELECT * FROM famous_people WHERE first_name = $1::text OR last_name = $1::text",[name], callback);
+};
+
+function printNames(result) {
+  console.log(`Found ${result.rows.length} person(s) by the name '${name}':`);
+
+  result.rows.forEach((element, i) => {
+    console.log(`- ${i+1}: ${element.first_name} ${element.last_name}, born '${moment(element.birthdate).format("YYYY-MM-DD")}'
+      `);
+  });
+  client.end();
+}
+
+byName(name);
+//   console.log(`Found ${result.rows.length} person(s) by the name '${name}':`);
+//   result.rows.forEach((element, i) => {
+//     console.log(`- ${i+1}: ${element.first_name} ${element.last_name}, born '${moment(element.birthdate).format("YYYY-MM-DD")}'`);
+
+//   });
+
+//   client.end();
+// });
+//module.exports = {
+//   byName,
+//   close: () => { client.end(); }
+// };
+
+// module.exports = {
+//   byName,
+//   close: () => { client.end(); }
+// };
+
+
+
+
+
+// client.connect((err) => {
+//   if (err) {
+//     return console.error("Connection Error", err);
+//   }
+//   console.log("Searching...");
+
+//   client.query("SELECT * FROM famous_people WHERE first_name = $1::text OR last_name = $1::text", [name], (err, result) => {
+//     if (err) {
+//       return console.error("error running query", err);
+//     }
+//     console.log(`Found ${result.rows.length} person(s) by the name '${name}':`);
+//     result.rows.forEach((element, i) => {
+//       console.log(`- ${i+1}: ${element.first_name} ${element.last_name}, born '${moment(element.birthdate).format("YYYY-MM-DD")}'`);
+
+//     });
+
+//     client.end();
+//   });
+// });
