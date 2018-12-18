@@ -18,7 +18,9 @@ client.connect((err) => {
     return console.error("Connection Error", err);
   }
   console.log("Searching...");
-  client.query("SELECT * FROM famous_people WHERE first_name = $1::text OR last_name = $1::text", [name], (err, result) => {
+  client.query("SELECT * FROM famous_people WHERE first_name = $1::text OR last_name = $1::text", [name], printName);
+
+  function printName(err, result){
     if (err) {
       return console.error("error running query", err);
     }
@@ -29,5 +31,6 @@ client.connect((err) => {
     });
 
     client.end();
-  });
+  }
+
 });
