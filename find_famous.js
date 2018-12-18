@@ -12,29 +12,22 @@ const knex = require('knex')({
     password: settings.password,
     database : settings.database
   }
-
 });
 
+knex.select().from('famous_people').where('first_name', '=', name, 'OR', 'last_name', '=', name)
+ .then((rows) => {
+    printName(rows);
+ })
+ .finally(() => {
+        knex.destroy();
+    })
+;
 
+function printName(result){
 
-// client.connect((err) => {
-//   if (err) {
-//     return console.error("Connection Error", err);
-//   }
-//   console.log("Searching...");
-//   client.query("SELECT * FROM famous_people WHERE first_name = $1::text OR last_name = $1::text", [name], printName);
+  console.log(`Found ${result.length} person(s) by the name '${name}':`);
+  result.forEach((element, i) => {
+    console.log(`- ${i+1}: ${element.first_name} ${element.last_name}, born '${moment(element.birthdate).format("YYYY-MM-DD")}'`);
+    });
+}
 
-//   function printName(err, result){
-//     if (err) {
-//       return console.error("error running query", err);
-//     }
-//     console.log(`Found ${result.rows.length} person(s) by the name '${name}':`);
-//     result.rows.forEach((element, i) => {
-//       console.log(`- ${i+1}: ${element.first_name} ${element.last_name}, born '${moment(element.birthdate).format("YYYY-MM-DD")}'`);
-
-//     });
-
-//     client.end();
-//   }
-
-// });
